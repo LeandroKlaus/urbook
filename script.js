@@ -3,6 +3,7 @@ const nextBtn = document.querySelector("#next-btn");
 const restartBtn = document.querySelector("#restart-btn");
 const book = document.querySelector("#book");
 const papers = document.querySelectorAll(".paper");
+const backgroundMusic = document.querySelector("#background-music");
 
 const numOfPapers = papers.length;
 const maxLocation = numOfPapers + 1;
@@ -111,3 +112,63 @@ function closeBook(isAtBeginning) {
         book.style.transform = "translateX(100%)";
     }
 }
+
+let volumeFadeInterval;
+
+const landscapeCheck = window.matchMedia("(orientation: landscape)");
+
+function controlarMusicaComFade(e) {
+    clearInterval(volumeFadeInterval);
+
+    if (e.matches) {
+        const fadeInDuration = 5000;
+        const stepTime = 50;
+        const totalSteps = fadeInDuration / stepTime;
+        const volumeStep = 1.0 / totalSteps;
+
+        if (backgroundMusic.paused) {
+            backgroundMusic.volume = 0;
+        }
+        
+        backgroundMusic.play().catch(error => {
+            console.log("A reprodução automática foi bloqueada. A música começará na primeira interação do usuário.");
+        });
+
+        volumeFadeInterval = setInterval(() => {
+            let newVolume = backgroundMusic.volume + volumeStep;
+            if (newVolume >= 1.0) {
+                backgroundMusic.volume = 1.0;
+                clearInterval(volumeFadeInterval);
+            } else {
+                backgroundMusic.volume = newVolume;
+            }
+        }, stepTime);
+
+    } else {
+        const fadeOutDuration = 5000;
+        const stepTime = 50;
+        const currentVolume = backgroundMusic.volume;
+        const totalSteps = fadeOutDuration / stepTime;
+        const volumeStep = currentVolume / totalSteps;
+
+        volumeFadeInterval = setInterval(() => {
+            let newVolume = backgroundMusic.volume - volumeStep;
+            if (newVolume <= 0) {
+                backgroundMusic.volume = 0;
+                backgroundMusic.pause();
+                clearInterval(volumeFadeInterval);
+            } else {
+                backgroundMusic.volume = newVolume;
+            }
+        }, stepTime);
+    }
+}
+
+if (!landscapeCheck.matches) {
+    backgroundMusic.pause();
+    backgroundMusic.volume = 0;
+} else {
+    controlarMusicaComFade(landscapeCheck);
+}
+
+landscapeCheck.addEventListener("change", controlarMusicaComFade);
