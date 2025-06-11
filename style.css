@@ -79,8 +79,8 @@ button img {
 
 .book {
     position: relative;
-    height: clamp(280px, 85vh, 520px);
-    width: clamp(210px, 65vh, 380px);
+    height: clamp(280px, 85vh, 520px); /**/
+    width: clamp(210px, 65vh, 380px); /**/
     transition: transform 0.8s ease;
     transform-style: preserve-3d;
 }
@@ -160,5 +160,12 @@ button img {
 
     .book, #prev-btn, #next-btn, #restart-btn {
         display: none !important;
+    }
+}
+
+@media (max-height: 480px) and (orientation: landscape) {
+    .book {
+        height: clamp(280px, 75vh, 520px);
+        width: clamp(210px, 55vh, 380px);
     }
 }
