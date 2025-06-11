@@ -1,0 +1,165 @@
+/* Importação da fonte e reset básico */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    min-height: 100vh;
+    
+    /* Fundo com imagem local do projeto */
+    background-image: url('images/fundo.jpg'); /* << LINHA ALTERADA */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    overflow: hidden;
+    perspective: 2000px;
+}
+
+/* --- MENSAGEM DE ORIENTAÇÃO PARA VIRAR O CELULAR --- */
+#orientation-prompt {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+#orientation-prompt img {
+    width: 80px;
+    margin-bottom: 20px;
+}
+
+/* --- ESTILOS DOS BOTÕES DE NAVEGAÇÃO --- */
+button {
+    position: fixed;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 50;
+}
+
+button:hover {
+    transform: scale(1.15);
+}
+
+button img {
+    width: clamp(40px, 8vw, 70px);
+    filter: drop-shadow(0 0 5px rgba(255, 223, 115, 0.7));
+}
+
+#prev-btn {
+    left: 2%;
+}
+
+#next-btn {
+    right: 2%;
+}
+
+/* --- ESTILO DO BOTÃO RESTART ATUALIZADO --- */
+#restart-btn {
+    display: none;
+    right: 2%; /* Alinhado com o botão next */
+}
+
+#restart-btn img {
+     width: clamp(50px, 10vw, 80px);
+}
+
+/* --- ESTILOS DO LIVRO --- */
+.book {
+    position: relative;
+    height: clamp(280px, 85vh, 520px);
+    width: clamp(210px, 65vh, 380px);
+    transition: transform 0.8s ease;
+    transform-style: preserve-3d;
+}
+
+/* --- ESTILOS DAS FOLHAS ("PAPER") --- */
+.paper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transform-style: preserve-3d;
+    transform-origin: left;
+    transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.paper.flipped {
+    transform: rotateY(-180deg);
+}
+
+/* --- ESTILOS DA FRENTE E VERSO DAS FOLHAS --- */
+.front,
+.back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #fdfaf5;
+    border-radius: 6px;
+    overflow: hidden;
+    backface-visibility: hidden;
+}
+
+.back {
+    transform: rotateY(180deg);
+}
+
+.front-content,
+.back-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.front-content img,
+.back-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#f1 {
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.4);
+}
+
+#b10 {
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* --- MEDIA QUERIES PARA RESPONSIVIDADE --- */
+@media (min-width: 768px) {
+    #prev-btn { left: 10%; }
+    #next-btn { right: 10%; }
+    #restart-btn { right: 10%; } /* Ajuste para responsividade */
+}
+
+@media (min-width: 1200px) {
+    #prev-btn { left: 20%; }
+    #next-btn { right: 20%; }
+    #restart-btn { right: 20%; } /* Ajuste para responsividade */
+}
