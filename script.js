@@ -10,6 +10,8 @@ const maxLocation = numOfPapers + 1;
 let currentLocation = 1;
 
 function updateButtons() {
+    // Esta função agora é controlada principalmente por handleOrientationChange,
+    // mas a mantemos para a lógica de virar a página.
     if (currentLocation === 1) {
         prevBtn.style.display = 'none';
     } else {
@@ -113,14 +115,25 @@ function closeBook(isAtBeginning) {
     }
 }
 
+
+// --- INÍCIO DA SEÇÃO MODIFICADA ---
+
 let volumeFadeInterval;
+const orientationPrompt = document.querySelector("#orientation-prompt");
 
-const landscapeCheck = window.matchMedia("(orientation: landscape)");
-
-function controlarMusicaComFade(e) {
+function handleOrientationChange() {
     clearInterval(volumeFadeInterval);
 
-    if (e.matches) {
+    // Verifica a orientação comparando largura e altura da janela
+    const isLandscape = window.innerWidth > window.innerHeight;
+
+    if (isLandscape) {
+        // MODO PAISAGEM
+        orientationPrompt.style.display = 'none';
+        book.style.display = 'block';
+        updateButtons(); // Atualiza os botões com base na página atual
+
+        // Fade in da música
         const fadeInDuration = 5000;
         const stepTime = 50;
         const totalSteps = fadeInDuration / stepTime;
@@ -128,12 +141,11 @@ function controlarMusicaComFade(e) {
 
         if (backgroundMusic.paused) {
             backgroundMusic.volume = 0;
+            backgroundMusic.play().catch(error => {
+                console.log("A reprodução automática foi bloqueada. A música começará na primeira interação do usuário.");
+            });
         }
         
-        backgroundMusic.play().catch(error => {
-            console.log("A reprodução automática foi bloqueada. A música começará na primeira interação do usuário.");
-        });
-
         volumeFadeInterval = setInterval(() => {
             let newVolume = backgroundMusic.volume + volumeStep;
             if (newVolume >= 1.0) {
@@ -145,7 +157,17 @@ function controlarMusicaComFade(e) {
         }, stepTime);
 
     } else {
-        const fadeOutDuration = 5000;
+        // MODO RETRATO
+        orientationPrompt.style.display = 'flex';
+        book.style.display = 'none';
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        if(restartBtn) {
+            restartBtn.style.display = 'none';
+        }
+
+        // Fade out da música
+        const fadeOutDuration = 2000; // Fade out mais rápido
         const stepTime = 50;
         const currentVolume = backgroundMusic.volume;
         const totalSteps = fadeOutDuration / stepTime;
@@ -164,11 +186,8 @@ function controlarMusicaComFade(e) {
     }
 }
 
-if (!landscapeCheck.matches) {
-    backgroundMusic.pause();
-    backgroundMusic.volume = 0;
-} else {
-    controlarMusicaComFade(landscapeCheck);
-}
+// Adiciona um ouvinte de evento para o redimensionamento da janela
+window.addEventListener('resize', handleOrientationChange);
 
-landscapeCheck.addEventListener("change", controlarMusicaComFade);
+// Executa a função uma vez no carregamento da página para definir o estado inicial
+document.addEventListener('DOMContentLoaded', handleOrientationChange);

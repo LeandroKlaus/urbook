@@ -8,7 +8,7 @@
 
 body {
     font-family: "Poppins", sans-serif;
-    min-height: 100vh;
+    min-height: 100dvh; /* MODIFICADO */
     background-image: url('images/fundo.jpg');
     background-size: cover;
     background-position: center;
@@ -153,15 +153,7 @@ button img {
     #restart-btn { right: 20%; }
 }
 
-@media (max-width: 800px) and (orientation: portrait) {
-    #orientation-prompt {
-        display: flex;
-    }
-
-    .book, #prev-btn, #next-btn, #restart-btn {
-        display: none !important;
-    }
-}
+/* O BLOCO DE ORIENTATION:PORTRAIT FOI REMOVIDO DAQUI */
 
 @media (max-height: 480px) and (orientation: landscape) {
     .book {
