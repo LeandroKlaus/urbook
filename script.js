@@ -38,8 +38,6 @@ nextBtn.addEventListener("click", goNextPage);
 prevBtn.addEventListener("click", goPrevPage);
 restartBtn.addEventListener("click", goInitialState);
 
-
-// --- NOVO: FUNÇÃO PARA ENTRAR EM TELA CHEIA ---
 function enterFullscreen(element) {
     if (element.requestFullscreen) {
         element.requestFullscreen();
@@ -52,13 +50,23 @@ function enterFullscreen(element) {
     }
 }
 
+function exitFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) { // Firefox
+        document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) { // Chrome, Safari e Opera
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { // IE/Edge
+        document.msExitFullscreen();
+    }
+}
+
 
 function goNextPage() {
     if (currentLocation < maxLocation) {
-        // MODIFICADO: Adicionada a lógica de tela cheia aqui
         if (currentLocation === 1) {
             openBook();
-            // Pede para entrar em tela cheia apenas na primeira vez que o livro é aberto
             if (!document.fullscreenElement) {
                 enterFullscreen(document.documentElement);
             }
@@ -142,12 +150,11 @@ function handleOrientationChange() {
     const isLandscape = screen.orientation.type.includes('landscape');
 
     if (isLandscape) {
-        // MODO PAISAGEM
+        // MODO PAISAGEM: Fade-in da música
         orientationPrompt.style.display = 'none';
         book.style.display = 'block';
         updateButtons(); 
 
-        // Fade in da música
         const fadeInDuration = 5000;
         const stepTime = 50;
         const totalSteps = fadeInDuration / stepTime;
@@ -180,12 +187,13 @@ function handleOrientationChange() {
             restartBtn.style.display = 'none';
         }
 
-        // Fade out da música
+        // MODIFICADO: Lógica de fade-out restaurada para a música
         const fadeOutDuration = 2000;
         const stepTime = 50;
         const currentVolume = backgroundMusic.volume;
+        // Evita divisão por zero se o volume já for 0
         const totalSteps = fadeOutDuration / stepTime;
-        const volumeStep = currentVolume / totalSteps;
+        const volumeStep = currentVolume > 0 ? currentVolume / totalSteps : 0;
 
         volumeFadeInterval = setInterval(() => {
             let newVolume = backgroundMusic.volume - volumeStep;
@@ -197,6 +205,11 @@ function handleOrientationChange() {
                 backgroundMusic.volume = newVolume;
             }
         }, stepTime);
+
+        // Sai da tela cheia automaticamente
+        if (document.fullscreenElement) {
+            exitFullscreen();
+        }
     }
 }
 
