@@ -10,8 +10,6 @@ const maxLocation = numOfPapers + 1;
 let currentLocation = 1;
 
 function updateButtons() {
-    // Esta função agora é controlada principalmente por handleOrientationChange,
-    // mas a mantemos para a lógica de virar a página.
     if (currentLocation === 1) {
         prevBtn.style.display = 'none';
     } else {
@@ -116,7 +114,7 @@ function closeBook(isAtBeginning) {
 }
 
 
-// --- INÍCIO DA SEÇÃO MODIFICADA ---
+// --- INÍCIO DA SEÇÃO MODIFICADA E CORRIGIDA ---
 
 let volumeFadeInterval;
 const orientationPrompt = document.querySelector("#orientation-prompt");
@@ -124,14 +122,14 @@ const orientationPrompt = document.querySelector("#orientation-prompt");
 function handleOrientationChange() {
     clearInterval(volumeFadeInterval);
 
-    // Verifica a orientação comparando largura e altura da janela
-    const isLandscape = window.innerWidth > window.innerHeight;
+    // MODIFICADO: Usando a Screen Orientation API para uma detecção precisa.
+    const isLandscape = screen.orientation.type.includes('landscape');
 
     if (isLandscape) {
         // MODO PAISAGEM
         orientationPrompt.style.display = 'none';
         book.style.display = 'block';
-        updateButtons(); // Atualiza os botões com base na página atual
+        updateButtons(); 
 
         // Fade in da música
         const fadeInDuration = 5000;
@@ -167,7 +165,7 @@ function handleOrientationChange() {
         }
 
         // Fade out da música
-        const fadeOutDuration = 2000; // Fade out mais rápido
+        const fadeOutDuration = 2000;
         const stepTime = 50;
         const currentVolume = backgroundMusic.volume;
         const totalSteps = fadeOutDuration / stepTime;
@@ -186,8 +184,8 @@ function handleOrientationChange() {
     }
 }
 
-// Adiciona um ouvinte de evento para o redimensionamento da janela
-window.addEventListener('resize', handleOrientationChange);
+// MODIFICADO: Usando o evento 'change' da Screen Orientation API.
+screen.orientation.addEventListener('change', handleOrientationChange);
 
-// Executa a função uma vez no carregamento da página para definir o estado inicial
+// Executa a função uma vez no carregamento da página para definir o estado inicial.
 document.addEventListener('DOMContentLoaded', handleOrientationChange);
