@@ -8,7 +8,7 @@
 
 body {
     font-family: "Poppins", sans-serif;
-    min-height: 100dvh; /* MODIFICADO */
+    min-height: 100dvh;
     background-image: url('images/fundo.jpg');
     background-size: cover;
     background-position: center;
@@ -79,8 +79,8 @@ button img {
 
 .book {
     position: relative;
-    height: clamp(280px, 85vh, 520px); /**/
-    width: clamp(210px, 65vh, 380px); /**/
+    height: clamp(280px, 85vh, 520px);
+    width: clamp(210px, 65vh, 380px);
     transition: transform 0.8s ease;
     transform-style: preserve-3d;
 }
@@ -134,7 +134,18 @@ button img {
 }
 
 #f1 {
+    position: relative;
     box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.4);
+}
+
+#fullscreen-trigger {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    cursor: pointer;
 }
 
 #b10 {
@@ -152,8 +163,6 @@ button img {
     #next-btn { right: 20%; }
     #restart-btn { right: 20%; }
 }
-
-/* O BLOCO DE ORIENTATION:PORTRAIT FOI REMOVIDO DAQUI */
 
 @media (max-height: 480px) and (orientation: landscape) {
     .book {

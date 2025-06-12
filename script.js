@@ -4,6 +4,7 @@ const restartBtn = document.querySelector("#restart-btn");
 const book = document.querySelector("#book");
 const papers = document.querySelectorAll(".paper");
 const backgroundMusic = document.querySelector("#background-music");
+const fullscreenTrigger = document.querySelector("#fullscreen-trigger");
 
 const numOfPapers = papers.length;
 const maxLocation = numOfPapers + 1;
@@ -34,6 +35,12 @@ function resetZIndex() {
 resetZIndex();
 updateButtons();
 
+fullscreenTrigger.addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+        enterFullscreen(document.documentElement);
+    }
+});
+
 nextBtn.addEventListener("click", goNextPage);
 prevBtn.addEventListener("click", goPrevPage);
 restartBtn.addEventListener("click", goInitialState);
@@ -41,11 +48,11 @@ restartBtn.addEventListener("click", goInitialState);
 function enterFullscreen(element) {
     if (element.requestFullscreen) {
         element.requestFullscreen();
-    } else if (element.mozRequestFullScreen) { // Firefox
+    } else if (element.mozRequestFullScreen) {
         element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) { // Chrome, Safari e Opera
+    } else if (element.webkitRequestFullscreen) {
         element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) { // IE/Edge
+    } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
     }
 }
@@ -53,23 +60,19 @@ function enterFullscreen(element) {
 function exitFullscreen() {
     if (document.exitFullscreen) {
         document.exitFullscreen();
-    } else if (document.mozCancelFullScreen) { // Firefox
+    } else if (document.mozCancelFullScreen) {
         document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) { // Chrome, Safari e Opera
+    } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) { // IE/Edge
+    } else if (document.msExitFullscreen) {
         document.msExitFullscreen();
     }
 }
-
 
 function goNextPage() {
     if (currentLocation < maxLocation) {
         if (currentLocation === 1) {
             openBook();
-            if (!document.fullscreenElement) {
-                enterFullscreen(document.documentElement);
-            }
         }
 
         papers[currentLocation - 1].classList.add("flipped");
@@ -150,7 +153,6 @@ function handleOrientationChange() {
     const isLandscape = screen.orientation.type.includes('landscape');
 
     if (isLandscape) {
-        // MODO PAISAGEM: Fade-in da música
         orientationPrompt.style.display = 'none';
         book.style.display = 'block';
         updateButtons(); 
@@ -178,7 +180,6 @@ function handleOrientationChange() {
         }, stepTime);
 
     } else {
-        // MODO RETRATO
         orientationPrompt.style.display = 'flex';
         book.style.display = 'none';
         prevBtn.style.display = 'none';
@@ -187,11 +188,9 @@ function handleOrientationChange() {
             restartBtn.style.display = 'none';
         }
 
-        // MODIFICADO: Lógica de fade-out restaurada para a música
         const fadeOutDuration = 2000;
         const stepTime = 50;
         const currentVolume = backgroundMusic.volume;
-        // Evita divisão por zero se o volume já for 0
         const totalSteps = fadeOutDuration / stepTime;
         const volumeStep = currentVolume > 0 ? currentVolume / totalSteps : 0;
 
@@ -206,7 +205,6 @@ function handleOrientationChange() {
             }
         }, stepTime);
 
-        // Sai da tela cheia automaticamente
         if (document.fullscreenElement) {
             exitFullscreen();
         }
