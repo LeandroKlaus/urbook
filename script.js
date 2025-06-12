@@ -38,10 +38,30 @@ nextBtn.addEventListener("click", goNextPage);
 prevBtn.addEventListener("click", goPrevPage);
 restartBtn.addEventListener("click", goInitialState);
 
+
+// --- NOVO: FUNÇÃO PARA ENTRAR EM TELA CHEIA ---
+function enterFullscreen(element) {
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) { // Firefox
+        element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) { // Chrome, Safari e Opera
+        element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) { // IE/Edge
+        element.msRequestFullscreen();
+    }
+}
+
+
 function goNextPage() {
     if (currentLocation < maxLocation) {
+        // MODIFICADO: Adicionada a lógica de tela cheia aqui
         if (currentLocation === 1) {
             openBook();
+            // Pede para entrar em tela cheia apenas na primeira vez que o livro é aberto
+            if (!document.fullscreenElement) {
+                enterFullscreen(document.documentElement);
+            }
         }
 
         papers[currentLocation - 1].classList.add("flipped");
@@ -113,16 +133,12 @@ function closeBook(isAtBeginning) {
     }
 }
 
-
-// --- INÍCIO DA SEÇÃO MODIFICADA E CORRIGIDA ---
-
 let volumeFadeInterval;
 const orientationPrompt = document.querySelector("#orientation-prompt");
 
 function handleOrientationChange() {
     clearInterval(volumeFadeInterval);
 
-    // MODIFICADO: Usando a Screen Orientation API para uma detecção precisa.
     const isLandscape = screen.orientation.type.includes('landscape');
 
     if (isLandscape) {
@@ -184,8 +200,6 @@ function handleOrientationChange() {
     }
 }
 
-// MODIFICADO: Usando o evento 'change' da Screen Orientation API.
 screen.orientation.addEventListener('change', handleOrientationChange);
 
-// Executa a função uma vez no carregamento da página para definir o estado inicial.
 document.addEventListener('DOMContentLoaded', handleOrientationChange);
